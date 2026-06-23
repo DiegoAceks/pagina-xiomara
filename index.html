@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Una preguntita 💗</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="hearts-container" id="heartsContainer"></div>
+
+  <main class="card">
+    <section class="screen active" id="screenQuestion">
+      <div class="emoji-main">🌷</div>
+      <h1>Xiomara, ¿quieres salir conmigo?</h1>
+      <p class="subtitle">
+        Prometo que será un plan bonito, tranqui y con buena comida.
+      </p>
+
+      <div class="buttons">
+        <button class="btn yes" id="yesBtn">Sí, vamos 💗</button>
+        <button class="btn no" id="noBtn">No 😭</button>
+      </div>
+
+      <p class="mini-message" id="noMessage">
+        Ese botón anda medio tímido, parece que no quiere funcionar 😂
+      </p>
+    </section>
+
+    <section class="screen" id="screenDate">
+      <div class="emoji-main">📅</div>
+      <h2>Perfecto, entonces elige el día</h2>
+      <p class="subtitle">Escoge cuándo te gustaría salir.</p>
+
+      <div class="form-group">
+        <label for="dateInput">Día</label>
+        <input type="date" id="dateInput" />
+      </div>
+
+      <div class="form-group">
+        <label for="timeInput">Hora</label>
+        <select id="timeInput">
+          <option value="">Selecciona una hora</option>
+          <option value="4:00 p. m.">4:00 p. m.</option>
+          <option value="5:00 p. m.">5:00 p. m.</option>
+          <option value="6:00 p. m.">6:00 p. m.</option>
+          <option value="7:00 p. m.">7:00 p. m.</option>
+          <option value="8:00 p. m.">8:00 p. m.</option>
+        </select>
+      </div>
+
+      <p class="error" id="dateError"></p>
+
+      <button class="btn primary" id="nextFoodBtn">Siguiente 🍽️</button>
+    </section>
+
+    <section class="screen" id="screenFood">
+      <div class="emoji-main">🍴</div>
+      <h2>Ahora lo más importante...</h2>
+      <p class="subtitle">¿Qué se te antoja para la salida?</p>
+
+      <div class="food-grid">
+        <button class="food-card" data-food="pollo a la brasa">🍗 Pollo a la brasa</button>
+        <button class="food-card" data-food="chifa">🥡 Chifa</button>
+        <button class="food-card" data-food="comida marina">🐟 Comida marina</button>
+        <button class="food-card" data-food="comida criolla">🍛 Comida criolla</button>
+      </div>
+
+      <p class="error" id="foodError"></p>
+
+      <button class="btn primary" id="finishBtn">Confirmar plan 💌</button>
+    </section>
+
+    <section class="screen" id="screenFinal">
+      <div class="emoji-main">💗</div>
+      <h2>Entonces tenemos una cita</h2>
+
+      <p class="final-text" id="finalText"></p>
+
+      <p class="soft-message">
+        No quiero apresurar nada, solo pasar un momento bonito contigo,
+        conversar, reírnos y disfrutar el plan. 🌷
+      </p>
+
+      <button class="btn primary" id="restartBtn">Ver otra vez ✨</button>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
