@@ -4,48 +4,64 @@
   padding: 0;
 }
 
+html,
 body {
-  min-height: 100vh;
+  min-height: 100%;
+}
+
+body {
+  min-height: 100dvh;
   font-family: "Segoe UI", Arial, sans-serif;
   background: linear-gradient(135deg, #ffd6e7, #fff3f8, #f8c8dc);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 16px;
   overflow: hidden;
 }
 
 .card {
-  width: 100%;
-  max-width: 460px;
-  max-height: 92vh;
-  overflow-y: auto;
-  background: rgba(255, 255, 255, 0.92);
+  width: min(100%, 460px);
+  height: min(92dvh, 680px);
+  background: rgba(255, 255, 255, 0.94);
   border-radius: 34px;
-  padding: 34px 24px;
+  padding: 30px 22px;
   text-align: center;
   box-shadow: 0 20px 55px rgba(199, 55, 115, 0.24);
   position: relative;
   z-index: 2;
   backdrop-filter: blur(8px);
-}
-
-.card::-webkit-scrollbar {
-  width: 6px;
-}
-
-.card::-webkit-scrollbar-thumb {
-  background: #ff9bc3;
-  border-radius: 20px;
+  overflow: hidden;
 }
 
 .screen {
   display: none;
+  height: 100%;
   animation: pop 0.45s ease;
 }
 
 .screen.active {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#screenQuestion {
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 8px;
+}
+
+#screenDate,
+#screenFinal {
+  justify-content: center;
+  overflow: hidden;
+}
+
+#screenFood {
+  justify-content: flex-start;
+  overflow: hidden;
 }
 
 @keyframes pop {
@@ -61,9 +77,14 @@ body {
 }
 
 .emoji-main {
-  font-size: 62px;
+  font-size: clamp(48px, 12vw, 62px);
   margin-bottom: 16px;
   animation: bounce 1.8s infinite;
+}
+
+.small-emoji {
+  font-size: clamp(40px, 10vw, 54px);
+  margin-bottom: 10px;
 }
 
 @keyframes bounce {
@@ -79,23 +100,28 @@ body {
 h1,
 h2 {
   color: #c93573;
-  font-size: 30px;
+  font-size: clamp(25px, 7vw, 30px);
   line-height: 1.18;
   margin-bottom: 14px;
 }
 
 h3 {
-  color: #a93161;
-  font-size: 17px;
-  text-align: left;
-  margin: 20px 0 12px;
+  color: #111;
+  font-size: 16px;
+  text-align: center;
+  margin: 18px 0 10px;
 }
 
 .subtitle {
   color: #7a3b55;
-  font-size: 16px;
-  margin-bottom: 28px;
+  font-size: clamp(14.5px, 4vw, 16px);
+  margin-bottom: 26px;
   line-height: 1.55;
+  max-width: 360px;
+}
+
+.food-subtitle {
+  margin-bottom: 10px;
 }
 
 .buttons {
@@ -104,9 +130,8 @@ h3 {
   align-items: center;
   gap: 14px;
   flex-wrap: wrap;
-  min-height: 74px;
-  margin-top: 10px;
-  position: relative;
+  min-height: 82px;
+  margin-top: 4px;
 }
 
 .btn {
@@ -117,6 +142,7 @@ h3 {
   font-weight: 750;
   cursor: pointer;
   transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+  user-select: none;
 }
 
 .btn:hover {
@@ -145,8 +171,8 @@ h3 {
   position: absolute;
   z-index: 20;
   transition:
-    top 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    left 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    top 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.85s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.25s ease;
   will-change: top, left;
 }
@@ -157,10 +183,11 @@ h3 {
 
 .mini-message {
   display: none;
-  margin-top: 22px;
+  margin-top: 20px;
   color: #a93d68;
   font-weight: 650;
   line-height: 1.45;
+  max-width: 340px;
 }
 
 .mini-message.show {
@@ -169,6 +196,8 @@ h3 {
 
 .form-group {
   text-align: left;
+  width: 100%;
+  max-width: 360px;
   margin-bottom: 18px;
 }
 
@@ -196,8 +225,49 @@ select:focus {
   border-color: #ff5c9a;
 }
 
-.food-section {
+.scroll-hint {
+  width: 100%;
+  max-width: 370px;
+  background: #fff0f7;
+  color: #a93161;
+  font-size: 13px;
+  font-weight: 750;
+  border: 1px solid #ffc0d9;
+  border-radius: 999px;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+}
+
+.food-scroll {
+  width: 100%;
+  max-width: 390px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 10px 12px 0;
   margin-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #ff5c9a #ffe3ee;
+}
+
+.food-scroll::-webkit-scrollbar {
+  width: 9px;
+}
+
+.food-scroll::-webkit-scrollbar-track {
+  background: #ffe3ee;
+  border-radius: 999px;
+}
+
+.food-scroll::-webkit-scrollbar-thumb {
+  background: #ff5c9a;
+  border-radius: 999px;
+  border: 2px solid #ffe3ee;
+}
+
+.food-section {
+  margin-bottom: 14px;
 }
 
 .food-grid {
@@ -207,7 +277,7 @@ select:focus {
 }
 
 .food-card {
-  min-height: 62px;
+  min-height: 58px;
   padding: 12px 10px;
   border: 2px solid #ffc0d9;
   background: #fff7fb;
@@ -236,14 +306,14 @@ select:focus {
   min-height: 22px;
   color: #d42f5e;
   font-weight: 750;
-  margin: 16px 0 12px;
+  margin: 4px 0 10px;
 }
 
 .final-text {
   color: #7a3b55;
-  font-size: 18px;
+  font-size: clamp(16px, 4.5vw, 18px);
   line-height: 1.65;
-  margin: 24px 0;
+  margin: 22px 0;
   font-weight: 650;
 }
 
@@ -257,8 +327,8 @@ select:focus {
   padding: 18px;
   color: #8f315c;
   line-height: 1.65;
-  margin-bottom: 26px;
-  font-size: 16px;
+  margin-bottom: 24px;
+  font-size: clamp(15px, 4vw, 16px);
 }
 
 .hearts-container {
@@ -291,35 +361,24 @@ select:focus {
 
 @media (max-width: 480px) {
   body {
-    padding: 12px;
+    padding: 8px;
   }
 
   .card {
-    max-height: 94vh;
-    padding: 30px 20px;
-    border-radius: 30px;
-  }
-
-  h1,
-  h2 {
-    font-size: 27px;
-  }
-
-  .emoji-main {
-    font-size: 56px;
-  }
-
-  .subtitle {
-    font-size: 15.5px;
+    width: 100%;
+    height: 96dvh;
+    border-radius: 28px;
+    padding: 26px 18px;
   }
 
   .buttons {
-    gap: 12px;
-    min-height: 120px;
+    flex-direction: column;
+    min-height: 142px;
   }
 
   .btn {
     width: 100%;
+    max-width: 260px;
   }
 
   .food-grid {
@@ -328,5 +387,35 @@ select:focus {
 
   .food-card {
     font-size: 15px;
+  }
+
+  .food-scroll {
+    max-width: 100%;
+    padding-right: 8px;
+  }
+}
+
+@media (max-height: 620px) {
+  .card {
+    height: 96dvh;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .emoji-main {
+    margin-bottom: 8px;
+  }
+
+  h1,
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    margin-bottom: 16px;
+  }
+
+  .soft-message {
+    padding: 14px;
   }
 }
