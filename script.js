@@ -5,6 +5,7 @@ const screenFinal = document.getElementById("screenFinal");
 
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
+const noZone = document.getElementById("noZone");
 const noMessage = document.getElementById("noMessage");
 
 const dateInput = document.getElementById("dateInput");
@@ -22,8 +23,10 @@ const restartBtn = document.getElementById("restartBtn");
 let selectedFood = "";
 let selectedDate = "";
 let selectedTime = "";
-let noOrigin = null;
+
+let noReady = false;
 let lastMove = 0;
+let lastDirection = null;
 
 function showScreen(screen) {
   document.querySelectorAll(".screen").forEach((item) => {
@@ -36,63 +39,120 @@ function showScreen(screen) {
   if (foodScroll) {
     foodScroll.scrollTop = 0;
   }
+
+  if (screen === screenQuestion) {
+    setTimeout(resetNoButton, 50);
+  }
 }
 
 yesBtn.addEventListener("click", () => {
-  resetNoButton();
   showScreen(screenDate);
 });
+
+function setupNoButtonPosition() {
+  const zoneRect = noZone.getBoundingClientRect();
+  const buttonRect = noBtn.getBoundingClientRect();
+
+  const currentX = buttonRect.left - zoneRect.left;
+  const currentY = buttonRect.top - zoneRect.top;
+
+  noBtn.style.transform = "none";
+  noBtn.style.left = `${currentX}px`;
+  noBtn.style.top = `${currentY}px`;
+
+  noReady = true;
+}
 
 function moveNoButton() {
   if (!screenQuestion.classList.contains("active")) return;
 
   const now = Date.now();
 
-  if (now - lastMove < 260) {
+  if (now - lastMove < 330) {
     return;
   }
 
   lastMove = now;
   noMessage.classList.add("show");
 
-  const areaRect = screenQuestion.getBoundingClientRect();
-  const buttonRect = noBtn.getBoundingClientRect();
-
-  if (!noBtn.classList.contains("runaway")) {
-    const startX = buttonRect.left - areaRect.left;
-    const startY = buttonRect.top - areaRect.top;
-
-    noOrigin = {
-      x: startX,
-      y: startY
-    };
-
-    noBtn.classList.add("runaway");
-    noBtn.style.left = `${startX}px`;
-    noBtn.style.top = `${startY}px`;
+  if (!noReady) {
+    setupNoButtonPosition();
   }
 
-  const padding = 18;
+  const padding = 10;
   const buttonWidth = noBtn.offsetWidth;
   const buttonHeight = noBtn.offsetHeight;
 
-  const maxX = screenQuestion.clientWidth - buttonWidth - padding;
-  const maxY = screenQuestion.clientHeight - buttonHeight - padding;
+  const maxX = noZone.clientWidth - buttonWidth - padding;
+  const maxY = noZone.clientHeight - buttonHeight - padding;
 
-  const movementX = Math.min(95, screenQuestion.clientWidth * 0.24);
-  const movementY = Math.min(80, screenQuestion.clientHeight * 0.16);
+  const minX = padding;
+  const minY = 40;
 
-  let randomX = noOrigin.x + (Math.random() * movementX * 2 - movementX);
-  let randomY = noOrigin.y + (Math.random() * movementY * 2 - movementY);
+  let currentX = parseFloat(noBtn.style.left);
+  let currentY = parseFloat(noBtn.style.top);
 
-  randomX = Math.max(padding, Math.min(randomX, maxX));
-  randomY = Math.max(padding, Math.min(randomY, maxY));
+  if (Number.isNaN(currentX) || Number.isNaN(currentY)) {
+    setupNoButtonPosition();
+    currentX = parseFloat(noBtn.style.left);
+    currentY = parseFloat(noBtn.style.top);
+  }
 
-  noBtn.style.left = `${randomX}px`;
-  noBtn.style.top = `${randomY}px`;
+  const directions = [
+    { x: 1, y: 0 },
+    { x: -1, y: 0 },
+    { x: 0, y: 1 },
+    { x: 0, y: -1 },
+    { x: 1, y: 1 },
+    { x: -1, y: 1 },
+    { x: 1, y: -1 },
+    { x: -1, y: -1 }
+  ];
+
+  let availableDirections = directions.filter((direction) => {
+    if (!lastDirection) return true;
+
+    return !(
+      direction.x === lastDirection.x &&
+      direction.y === lastDirection.y
+    );
+  });
+
+  let direction = availableDirections[
+    Math.floor(Math.random() * availableDirections.length)
+  ];
+
+  let stepX = 38 + Math.random() * 58;
+  let stepY = 28 + Math.random() * 48;
+
+  let nextX = currentX + direction.x * stepX;
+  let nextY = currentY + direction.y * stepY;
+
+  nextX += Math.random() * 18 - 9;
+  nextY += Math.random() * 18 - 9;
+
+  if (nextX < minX || nextX > maxX || nextY < minY || nextY > maxY) {
+    direction = directions[Math.floor(Math.random() * directions.length)];
+
+    nextX = minX + Math.random() * (maxX - minX);
+    nextY = minY + Math.random() * (maxY - minY);
+  }
+
+  nextX = Math.max(minX, Math.min(nextX, maxX));
+  nextY = Math.max(minY, Math.min(nextY, maxY));
+
+  noBtn.classList.add("moving");
+  noBtn.style.left = `${nextX}px`;
+  noBtn.style.top = `${nextY}px`;
+
+  setTimeout(() => {
+    noBtn.classList.remove("moving");
+  }, 260);
+
+  lastDirection = direction;
 }
 
-screenQuestion.addEventListener("pointermove", (event) => {
+noZone.addEventListener("pointermove", (event) => {
   if (!screenQuestion.classList.contains("active")) return;
 
   const buttonRect = noBtn.getBoundingClientRect();
@@ -105,7 +165,7 @@ screenQuestion.addEventListener("pointermove", (event) => {
     event.clientY - buttonCenterY
   );
 
-  if (distance < 105) {
+  if (distance < 95) {
     moveNoButton();
   }
 });
@@ -123,11 +183,15 @@ noBtn.addEventListener("touchstart", (event) => {
 });
 
 function resetNoButton() {
-  noBtn.classList.remove("runaway");
-  noBtn.style.left = "";
-  noBtn.style.top = "";
-  noOrigin = null;
+  noBtn.style.left = "50%";
+  noBtn.style.top = "calc(100% - 58px)";
+  noBtn.style.transform = "translateX(-50%)";
+  noBtn.classList.remove("moving");
+
+  noReady = false;
   lastMove = 0;
+  lastDirection = null;
+
   noMessage.classList.remove("show");
 }
 
