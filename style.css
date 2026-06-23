@@ -186,8 +186,8 @@ h3 {
   z-index: 20;
   min-width: 86px;
   transition:
-    left 0.62s cubic-bezier(0.22, 1, 0.36, 1),
-    top 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+    left 0.58s cubic-bezier(0.25, 0.8, 0.25, 1),
+    top 0.58s cubic-bezier(0.25, 0.8, 0.25, 1),
     transform 0.25s ease;
   will-change: left, top;
 }
