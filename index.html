@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Una preguntita 💗</title>
+  <title>Una salida pendiente 💗</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -12,9 +12,11 @@
   <main class="card">
     <section class="screen active" id="screenQuestion">
       <div class="emoji-main">🌷</div>
+
       <h1>Xiomara, ¿quieres salir conmigo?</h1>
+
       <p class="subtitle">
-        Prometo que será un plan bonito, tranqui y con buena comida.
+        Un plan bonito, sin apuros, con buena comida y una excusa perfecta para vernos.
       </p>
 
       <div class="buttons">
@@ -23,14 +25,18 @@
       </div>
 
       <p class="mini-message" id="noMessage">
-        Ese botón anda medio tímido, parece que no quiere funcionar 😂
+        Di que sí c: 
       </p>
     </section>
 
     <section class="screen" id="screenDate">
       <div class="emoji-main">📅</div>
-      <h2>Perfecto, entonces elige el día</h2>
-      <p class="subtitle">Escoge cuándo te gustaría salir.</p>
+
+      <h2>Entonces dime cuándo</h2>
+
+      <p class="subtitle">
+        Elige un día y una hora. Yo me encargo de guardar bien ese momento.
+      </p>
 
       <div class="form-group">
         <label for="dateInput">Día</label>
@@ -41,45 +47,90 @@
         <label for="timeInput">Hora</label>
         <select id="timeInput">
           <option value="">Selecciona una hora</option>
-          <option value="4:00 p. m.">4:00 p. m.</option>
-          <option value="5:00 p. m.">5:00 p. m.</option>
-          <option value="6:00 p. m.">6:00 p. m.</option>
-          <option value="7:00 p. m.">7:00 p. m.</option>
-          <option value="8:00 p. m.">8:00 p. m.</option>
+          <option value="4:00 p. m.">5:00 p. m.</option>
+          <option value="5:00 p. m.">6:00 p. m.</option>
+          <option value="6:00 p. m.">7:00 p. m.</option>
+          <option value="7:00 p. m.">8:00 p. m.</option>
+          <option value="8:00 p. m.">9:00 p. m.</option>
+          <option value="9:00 p. m.">10:00 p. m.</option>
         </select>
       </div>
 
       <p class="error" id="dateError"></p>
 
-      <button class="btn primary" id="nextFoodBtn">Siguiente 🍽️</button>
+      <button class="btn primary" id="nextFoodBtn">Elegir comida 🍽️</button>
     </section>
 
     <section class="screen" id="screenFood">
       <div class="emoji-main">🍴</div>
-      <h2>Ahora lo más importante...</h2>
-      <p class="subtitle">¿Qué se te antoja para la salida?</p>
 
-      <div class="food-grid">
-        <button class="food-card" data-food="pollo a la brasa">🍗 Pollo a la brasa</button>
-        <button class="food-card" data-food="chifa">🥡 Chifa</button>
-        <button class="food-card" data-food="comida marina">🐟 Comida marina</button>
-        <button class="food-card" data-food="comida criolla">🍛 Comida criolla</button>
+      <h2>Ahora sí, decisión importante</h2>
+
+      <p class="subtitle">
+        Escoge lo que más se te antoje. Prometo respetar tu elección, aunque me dé hambre antes de llegar.
+      </p>
+
+      <div class="food-section">
+        <h3>Para antojo bravazo</h3>
+        <div class="food-grid">
+          <button class="food-card" data-food="pollo a la brasa">🍗 Pollo a la brasa</button>
+          <button class="food-card" data-food="mostrito">🍟 Mostrito</button>
+          <button class="food-card" data-food="parrilla de pollo">🔥 Parrilla de pollo</button>
+        </div>
+      </div>
+
+      <div class="food-section">
+        <h3>Sabores de chifa</h3>
+        <div class="food-grid">
+          <button class="food-card" data-food="arroz chaufa">🥡 Arroz chaufa</button>
+          <button class="food-card" data-food="tallarín saltado">🍜 Tallarín saltado</button>
+          <button class="food-card" data-food="aeropuerto">🍚 Aeropuerto</button>
+          <button class="food-card" data-food="pollo tipakay">🍯 Pollo tipakay</button>
+          <button class="food-card" data-food="kam lu wantán">🥟 Kam lu wantán</button>
+          <button class="food-card" data-food="wantán frito">✨ Wantán frito</button>
+        </div>
+      </div>
+
+      <div class="food-section">
+        <h3>Comida criolla</h3>
+        <div class="food-grid">
+          <button class="food-card" data-food="lomo saltado">🍛 Lomo saltado</button>
+          <button class="food-card" data-food="ají de gallina">🥘 Ají de gallina</button>
+          <button class="food-card" data-food="tacu tacu">🍽️ Tacu tacu</button>
+          <button class="food-card" data-food="seco con frejoles">🌿 Seco con frejoles</button>
+          <button class="food-card" data-food="arroz con pato">🍚 Arroz con pato</button>
+          <button class="food-card" data-food="carapulcra con sopa seca">🥣 Carapulcra con sopa seca</button>
+        </div>
+      </div>
+
+      <div class="food-section">
+        <h3>Algo marino</h3>
+        <div class="food-grid">
+          <button class="food-card" data-food="ceviche">🐟 Ceviche</button>
+          <button class="food-card" data-food="arroz con mariscos">🦐 Arroz con mariscos</button>
+          <button class="food-card" data-food="jalea mixta">🍤 Jalea mixta</button>
+          <button class="food-card" data-food="chicharrón de pescado">🐠 Chicharrón de pescado</button>
+          <button class="food-card" data-food="chaufa de mariscos">🍚 Chaufa de mariscos</button>
+          <button class="food-card" data-food="tiradito">🍋 Tiradito</button>
+        </div>
       </div>
 
       <p class="error" id="foodError"></p>
 
-      <button class="btn primary" id="finishBtn">Confirmar plan 💌</button>
+      <button class="btn primary" id="finishBtn">Guardar este plan 💌</button>
     </section>
 
     <section class="screen" id="screenFinal">
       <div class="emoji-main">💗</div>
-      <h2>Entonces tenemos una cita</h2>
+
+      <h2>Entonces queda escrito</h2>
 
       <p class="final-text" id="finalText"></p>
 
       <p class="soft-message">
-        No quiero apresurar nada, solo pasar un momento bonito contigo,
-        conversar, reírnos y disfrutar el plan. 🌷
+        No quiero correr más de lo necesario ni ponerle nombre a lo que todavía está floreciendo.
+        Solo quiero compartir un rato contigo, caminar sin prisa, reírnos de cualquier cosa
+        y dejar que la noche haga lo suyo.
       </p>
 
       <button class="btn primary" id="restartBtn">Ver otra vez ✨</button>
