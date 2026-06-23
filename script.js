@@ -26,7 +26,7 @@ let selectedTime = "";
 
 let noReady = false;
 let lastMove = 0;
-let lastDirection = null;
+let isMoving = false;
 
 function showScreen(screen) {
   document.querySelectorAll(".screen").forEach((item) => {
@@ -63,31 +63,34 @@ function setupNoButtonPosition() {
   noReady = true;
 }
 
-function moveNoButton() {
+function moveNoButton(event) {
   if (!screenQuestion.classList.contains("active")) return;
 
   const now = Date.now();
 
-  if (now - lastMove < 330) {
+  if (isMoving || now - lastMove < 620) {
     return;
   }
 
   lastMove = now;
+  isMoving = true;
   noMessage.classList.add("show");
 
   if (!noReady) {
     setupNoButtonPosition();
   }
 
-  const padding = 10;
+  const zoneRect = noZone.getBoundingClientRect();
+
+  const padding = 12;
+  const minY = 42;
+
   const buttonWidth = noBtn.offsetWidth;
   const buttonHeight = noBtn.offsetHeight;
 
+  const minX = padding;
   const maxX = noZone.clientWidth - buttonWidth - padding;
   const maxY = noZone.clientHeight - buttonHeight - padding;
-
-  const minX = padding;
-  const minY = 40;
 
   let currentX = parseFloat(noBtn.style.left);
   let currentY = parseFloat(noBtn.style.top);
@@ -98,48 +101,57 @@ function moveNoButton() {
     currentY = parseFloat(noBtn.style.top);
   }
 
-  const directions = [
-    { x: 1, y: 0 },
-    { x: -1, y: 0 },
-    { x: 0, y: 1 },
-    { x: 0, y: -1 },
-    { x: 1, y: 1 },
-    { x: -1, y: 1 },
-    { x: 1, y: -1 },
-    { x: -1, y: -1 }
-  ];
+  const cursorX = event ? event.clientX - zoneRect.left : noZone.clientWidth / 2;
+  const cursorY = event ? event.clientY - zoneRect.top : noZone.clientHeight / 2;
 
-  let availableDirections = directions.filter((direction) => {
-    if (!lastDirection) return true;
+  const buttonCenterX = currentX + buttonWidth / 2;
+  const buttonCenterY = currentY + buttonHeight / 2;
 
-    return !(
-      direction.x === lastDirection.x &&
-      direction.y === lastDirection.y
-    );
-  });
+  let awayX = buttonCenterX - cursorX;
+  let awayY = buttonCenterY - cursorY;
 
-  let direction = availableDirections[
-    Math.floor(Math.random() * availableDirections.length)
-  ];
+  const distance = Math.hypot(awayX, awayY) || 1;
 
-  let stepX = 38 + Math.random() * 58;
-  let stepY = 28 + Math.random() * 48;
+  awayX = awayX / distance;
+  awayY = awayY / distance;
 
-  let nextX = currentX + direction.x * stepX;
-  let nextY = currentY + direction.y * stepY;
+  const step = 58 + Math.random() * 34;
+  const sideVariation = 24;
 
-  nextX += Math.random() * 18 - 9;
-  nextY += Math.random() * 18 - 9;
-
-  if (nextX < minX || nextX > maxX || nextY < minY || nextY > maxY) {
-    direction = directions[Math.floor(Math.random() * directions.length)];
-
-    nextX = minX + Math.random() * (maxX - minX);
-    nextY = minY + Math.random() * (maxY - minY);
-  }
+  let nextX = currentX + awayX * step + (Math.random() * sideVariation - sideVariation / 2);
+  let nextY = currentY + awayY * step + (Math.random() * sideVariation - sideVariation / 2);
 
   nextX = Math.max(minX, Math.min(nextX, maxX));
   nextY = Math.max(minY, Math.min(nextY, maxY));
+
+  const nextCenterX = nextX + buttonWidth / 2;
+  const nextCenterY = nextY + buttonHeight / 2;
+  const nextDistance = Math.hypot(nextCenterX - cursorX, nextCenterY - cursorY);
+
+  if (nextDistance < 92) {
+    let bestX = nextX;
+    let bestY = nextY;
+    let bestDistance = nextDistance;
+
+    for (let i = 0; i < 12; i++) {
+      const testX = minX + Math.random() * (maxX - minX);
+      const testY = minY + Math.random() * (maxY - minY);
+
+      const testCenterX = testX + buttonWidth / 2;
+      const testCenterY = testY + buttonHeight / 2;
+
+      const testDistance = Math.hypot(testCenterX - cursorX, testCenterY - cursorY);
+
+      if (testDistance > bestDistance) {
+        bestX = testX;
+        bestY = testY;
+        bestDistance = testDistance;
+      }
+    }
+
+    nextX = bestX;
+    nextY = bestY;
+  }
 
   noBtn.classList.add("moving");
   noBtn.style.left = `${nextX}px`;
@@ -147,9 +159,8 @@ function moveNoButton() {
 
   setTimeout(() => {
     noBtn.classList.remove("moving");
-  }, 260);
-
-  lastDirection = direction;
+    isMoving = false;
+  }, 580);
 }
 
 noZone.addEventListener("pointermove", (event) => {
@@ -165,21 +176,29 @@ noZone.addEventListener("pointermove", (event) => {
     event.clientY - buttonCenterY
   );
 
-  if (distance < 95) {
-    moveNoButton();
+  if (distance < 72) {
+    moveNoButton(event);
   }
 });
 
-noBtn.addEventListener("mouseenter", moveNoButton);
+noBtn.addEventListener("mouseenter", (event) => {
+  moveNoButton(event);
+});
 
 noBtn.addEventListener("click", (event) => {
   event.preventDefault();
-  moveNoButton();
+  moveNoButton(event);
 });
 
 noBtn.addEventListener("touchstart", (event) => {
   event.preventDefault();
-  moveNoButton();
+
+  const touch = event.touches[0];
+
+  moveNoButton({
+    clientX: touch.clientX,
+    clientY: touch.clientY
+  });
 });
 
 function resetNoButton() {
@@ -190,7 +209,7 @@ function resetNoButton() {
 
   noReady = false;
   lastMove = 0;
-  lastDirection = null;
+  isMoving = false;
 
   noMessage.classList.remove("show");
 }
