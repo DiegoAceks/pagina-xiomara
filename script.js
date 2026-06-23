@@ -18,10 +18,12 @@ const foodError = document.getElementById("foodError");
 
 const finalText = document.getElementById("finalText");
 const restartBtn = document.getElementById("restartBtn");
+const card = document.querySelector(".card");
 
 let selectedFood = "";
 let selectedDate = "";
 let selectedTime = "";
+let noOrigin = null;
 
 function showScreen(screen) {
   document.querySelectorAll(".screen").forEach((item) => {
@@ -29,6 +31,7 @@ function showScreen(screen) {
   });
 
   screen.classList.add("active");
+  card.scrollTop = 0;
 }
 
 yesBtn.addEventListener("click", () => {
@@ -36,24 +39,72 @@ yesBtn.addEventListener("click", () => {
 });
 
 function moveNoButton() {
-  noMessage.classList.add("show");
-  noBtn.classList.add("runaway");
+  if (!screenQuestion.classList.contains("active")) return;
 
+  noMessage.classList.add("show");
+
+  const cardRect = card.getBoundingClientRect();
+  const buttonRect = noBtn.getBoundingClientRect();
+
+  if (!noBtn.classList.contains("runaway")) {
+    const startX = buttonRect.left - cardRect.left + card.scrollLeft;
+    const startY = buttonRect.top - cardRect.top + card.scrollTop;
+
+    noOrigin = {
+      x: startX,
+      y: startY
+    };
+
+    noBtn.classList.add("runaway");
+    noBtn.style.left = `${startX}px`;
+    noBtn.style.top = `${startY}px`;
+  }
+
+  const padding = 24;
   const buttonWidth = noBtn.offsetWidth;
   const buttonHeight = noBtn.offsetHeight;
 
-  const maxX = window.innerWidth - buttonWidth - 20;
-  const maxY = window.innerHeight - buttonHeight - 20;
+  const maxX = card.clientWidth - buttonWidth - padding;
+  const maxY = card.clientHeight - buttonHeight - padding;
 
-  const randomX = Math.floor(Math.random() * maxX);
-  const randomY = Math.floor(Math.random() * maxY);
+  const rangeX = 115;
+  const rangeY = 85;
+
+  let randomX = noOrigin.x + (Math.random() * rangeX * 2 - rangeX);
+  let randomY = noOrigin.y + (Math.random() * rangeY * 2 - rangeY);
+
+  randomX = Math.max(padding, Math.min(randomX, maxX));
+  randomY = Math.max(padding, Math.min(randomY, maxY));
 
   noBtn.style.left = `${randomX}px`;
   noBtn.style.top = `${randomY}px`;
 }
 
+card.addEventListener("mousemove", (event) => {
+  if (!screenQuestion.classList.contains("active")) return;
+
+  const buttonRect = noBtn.getBoundingClientRect();
+
+  const buttonCenterX = buttonRect.left + buttonRect.width / 2;
+  const buttonCenterY = buttonRect.top + buttonRect.height / 2;
+
+  const distance = Math.hypot(
+    event.clientX - buttonCenterX,
+    event.clientY - buttonCenterY
+  );
+
+  if (distance < 95) {
+    moveNoButton();
+  }
+});
+
 noBtn.addEventListener("mouseenter", moveNoButton);
-noBtn.addEventListener("click", moveNoButton);
+
+noBtn.addEventListener("click", (event) => {
+  event.preventDefault();
+  moveNoButton();
+});
+
 noBtn.addEventListener("touchstart", (event) => {
   event.preventDefault();
   moveNoButton();
@@ -67,7 +118,7 @@ nextFoodBtn.addEventListener("click", () => {
   selectedTime = timeInput.value;
 
   if (!selectedDate || !selectedTime) {
-    dateError.textContent = "Falta elegir el día y la hora 😌";
+    dateError.textContent = "Falta escoger el día y la hora 😌";
     return;
   }
 
@@ -75,30 +126,33 @@ nextFoodBtn.addEventListener("click", () => {
   showScreen(screenFood);
 });
 
-foodCards.forEach((card) => {
-  card.addEventListener("click", () => {
+foodCards.forEach((cardItem) => {
+  cardItem.addEventListener("click", () => {
     foodCards.forEach((item) => item.classList.remove("selected"));
-    card.classList.add("selected");
+    cardItem.classList.add("selected");
 
-    selectedFood = card.dataset.food;
+    selectedFood = cardItem.dataset.food;
     foodError.textContent = "";
   });
 });
 
 finishBtn.addEventListener("click", () => {
   if (!selectedFood) {
-    foodError.textContent = "Tienes que escoger la comida primero 😂";
+    foodError.textContent = "Primero elige qué vamos a comer 😂";
     return;
   }
 
   const formattedDate = formatDate(selectedDate);
 
   finalText.innerHTML = `
-    Me alegra mucho que hayas dicho que sí. 
-    Entonces queda pendiente nuestra salida para el 
-    <strong>${formattedDate}</strong> a las 
+    Entonces queda guardado: 
+    <strong>${formattedDate}</strong>, a las 
     <strong>${selectedTime}</strong>, con 
-    <strong>${selectedFood}</strong>.
+    <strong>${selectedFood}</strong> de por medio.
+    <br><br>
+    Y aunque parezca solo una salida, para mí será una pequeña pausa bonita:
+    un momento para mirarte sin prisa, escucharte con calma
+    y dejar que la noche tenga algo nuestro.
   `;
 
   showScreen(screenFinal);
@@ -111,11 +165,13 @@ restartBtn.addEventListener("click", () => {
 
   dateInput.value = "";
   timeInput.value = "";
+
   foodCards.forEach((item) => item.classList.remove("selected"));
 
   noBtn.classList.remove("runaway");
   noBtn.style.left = "";
   noBtn.style.top = "";
+  noOrigin = null;
   noMessage.classList.remove("show");
 
   showScreen(screenQuestion);
@@ -136,7 +192,7 @@ function createHeart() {
   const heartsContainer = document.getElementById("heartsContainer");
   const heart = document.createElement("div");
 
-  const emojis = ["💗", "🌸", "💕", "✨", "💖"];
+  const emojis = ["💗", "🌸", "💕", "✨", "💖", "🌷"];
   heart.classList.add("heart");
   heart.textContent = emojis[Math.floor(Math.random() * emojis.length)];
 
@@ -151,4 +207,4 @@ function createHeart() {
   }, 8000);
 }
 
-setInterval(createHeart, 600);
+setInterval(createHeart, 650);
