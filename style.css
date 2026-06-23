@@ -1,0 +1,268 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: linear-gradient(135deg, #ffd6e7, #ffeef5, #f8c8dc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.card {
+  width: 100%;
+  max-width: 430px;
+  min-height: 560px;
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 32px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(214, 79, 126, 0.25);
+  position: relative;
+  z-index: 2;
+  backdrop-filter: blur(8px);
+}
+
+.screen {
+  display: none;
+  animation: pop 0.45s ease;
+}
+
+.screen.active {
+  display: block;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.emoji-main {
+  font-size: 62px;
+  margin-bottom: 16px;
+  animation: bounce 1.8s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+h1,
+h2 {
+  color: #c93573;
+  font-size: 30px;
+  line-height: 1.2;
+  margin-bottom: 14px;
+}
+
+.subtitle {
+  color: #7a3b55;
+  font-size: 16px;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.btn {
+  border: none;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-3px);
+}
+
+.yes,
+.primary {
+  background: #ff5c9a;
+  color: white;
+  box-shadow: 0 10px 20px rgba(255, 92, 154, 0.35);
+}
+
+.no {
+  background: #ffe3ee;
+  color: #bb2f69;
+  border: 2px solid #ff9bc3;
+}
+
+.no.runaway {
+  position: fixed;
+  z-index: 999;
+  transition: top 0.25s ease, left 0.25s ease;
+}
+
+.mini-message {
+  display: none;
+  margin-top: 24px;
+  color: #a93d68;
+  font-weight: 600;
+}
+
+.mini-message.show {
+  display: block;
+}
+
+.form-group {
+  text-align: left;
+  margin-bottom: 18px;
+}
+
+label {
+  display: block;
+  color: #9b315e;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #ffc0d9;
+  border-radius: 18px;
+  outline: none;
+  font-size: 16px;
+  background: #fff7fb;
+  color: #7a3b55;
+}
+
+input:focus,
+select:focus {
+  border-color: #ff5c9a;
+}
+
+.food-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.food-card {
+  padding: 16px;
+  border: 2px solid #ffc0d9;
+  background: #fff7fb;
+  border-radius: 22px;
+  color: #9b315e;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.food-card:hover {
+  transform: scale(1.03);
+  background: #ffe3ee;
+}
+
+.food-card.selected {
+  background: #ff5c9a;
+  color: white;
+  border-color: #ff5c9a;
+  box-shadow: 0 10px 20px rgba(255, 92, 154, 0.28);
+}
+
+.error {
+  min-height: 22px;
+  color: #d42f5e;
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.final-text {
+  color: #7a3b55;
+  font-size: 18px;
+  line-height: 1.6;
+  margin: 24px 0;
+  font-weight: 600;
+}
+
+.soft-message {
+  background: #fff0f7;
+  border-radius: 22px;
+  padding: 18px;
+  color: #8f315c;
+  line-height: 1.6;
+  margin-bottom: 26px;
+}
+
+.hearts-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.heart {
+  position: absolute;
+  bottom: -40px;
+  font-size: 22px;
+  animation: floatUp 6s linear forwards;
+  opacity: 0.8;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  to {
+    transform: translateY(-110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    min-height: 520px;
+    padding: 28px 20px;
+    border-radius: 28px;
+  }
+
+  h1,
+  h2 {
+    font-size: 26px;
+  }
+
+  .emoji-main {
+    font-size: 54px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .buttons {
+    gap: 12px;
+  }
+}
