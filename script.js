@@ -18,12 +18,12 @@ const foodError = document.getElementById("foodError");
 
 const finalText = document.getElementById("finalText");
 const restartBtn = document.getElementById("restartBtn");
-const card = document.querySelector(".card");
 
 let selectedFood = "";
 let selectedDate = "";
 let selectedTime = "";
 let noOrigin = null;
+let lastMove = 0;
 
 function showScreen(screen) {
   document.querySelectorAll(".screen").forEach((item) => {
@@ -31,24 +31,36 @@ function showScreen(screen) {
   });
 
   screen.classList.add("active");
-  card.scrollTop = 0;
+
+  const foodScroll = document.querySelector(".food-scroll");
+  if (foodScroll) {
+    foodScroll.scrollTop = 0;
+  }
 }
 
 yesBtn.addEventListener("click", () => {
+  resetNoButton();
   showScreen(screenDate);
 });
 
 function moveNoButton() {
   if (!screenQuestion.classList.contains("active")) return;
 
+  const now = Date.now();
+
+  if (now - lastMove < 260) {
+    return;
+  }
+
+  lastMove = now;
   noMessage.classList.add("show");
 
-  const cardRect = card.getBoundingClientRect();
+  const areaRect = screenQuestion.getBoundingClientRect();
   const buttonRect = noBtn.getBoundingClientRect();
 
   if (!noBtn.classList.contains("runaway")) {
-    const startX = buttonRect.left - cardRect.left + card.scrollLeft;
-    const startY = buttonRect.top - cardRect.top + card.scrollTop;
+    const startX = buttonRect.left - areaRect.left;
+    const startY = buttonRect.top - areaRect.top;
 
     noOrigin = {
       x: startX,
@@ -60,18 +72,18 @@ function moveNoButton() {
     noBtn.style.top = `${startY}px`;
   }
 
-  const padding = 24;
+  const padding = 18;
   const buttonWidth = noBtn.offsetWidth;
   const buttonHeight = noBtn.offsetHeight;
 
-  const maxX = card.clientWidth - buttonWidth - padding;
-  const maxY = card.clientHeight - buttonHeight - padding;
+  const maxX = screenQuestion.clientWidth - buttonWidth - padding;
+  const maxY = screenQuestion.clientHeight - buttonHeight - padding;
 
-  const rangeX = 115;
-  const rangeY = 85;
+  const movementX = Math.min(95, screenQuestion.clientWidth * 0.24);
+  const movementY = Math.min(80, screenQuestion.clientHeight * 0.16);
 
-  let randomX = noOrigin.x + (Math.random() * rangeX * 2 - rangeX);
-  let randomY = noOrigin.y + (Math.random() * rangeY * 2 - rangeY);
+  let randomX = noOrigin.x + (Math.random() * movementX * 2 - movementX);
+  let randomY = noOrigin.y + (Math.random() * movementY * 2 - movementY);
 
   randomX = Math.max(padding, Math.min(randomX, maxX));
   randomY = Math.max(padding, Math.min(randomY, maxY));
@@ -80,7 +92,7 @@ function moveNoButton() {
   noBtn.style.top = `${randomY}px`;
 }
 
-card.addEventListener("mousemove", (event) => {
+screenQuestion.addEventListener("pointermove", (event) => {
   if (!screenQuestion.classList.contains("active")) return;
 
   const buttonRect = noBtn.getBoundingClientRect();
@@ -93,7 +105,7 @@ card.addEventListener("mousemove", (event) => {
     event.clientY - buttonCenterY
   );
 
-  if (distance < 95) {
+  if (distance < 105) {
     moveNoButton();
   }
 });
@@ -109,6 +121,15 @@ noBtn.addEventListener("touchstart", (event) => {
   event.preventDefault();
   moveNoButton();
 });
+
+function resetNoButton() {
+  noBtn.classList.remove("runaway");
+  noBtn.style.left = "";
+  noBtn.style.top = "";
+  noOrigin = null;
+  lastMove = 0;
+  noMessage.classList.remove("show");
+}
 
 const today = new Date().toISOString().split("T")[0];
 dateInput.setAttribute("min", today);
@@ -150,9 +171,8 @@ finishBtn.addEventListener("click", () => {
     <strong>${selectedTime}</strong>, con 
     <strong>${selectedFood}</strong> de por medio.
     <br><br>
-    Y aunque parezca solo una salida, para mí será una pequeña pausa bonita:
-    un momento para mirarte sin prisa, escucharte con calma
-    y dejar que la noche tenga algo nuestro.
+    Y quizá sea solo una salida, pero me gusta pensar que hay días pequeños
+    que se vuelven especiales cuando se comparten con la persona correcta.
   `;
 
   showScreen(screenFinal);
@@ -168,12 +188,7 @@ restartBtn.addEventListener("click", () => {
 
   foodCards.forEach((item) => item.classList.remove("selected"));
 
-  noBtn.classList.remove("runaway");
-  noBtn.style.left = "";
-  noBtn.style.top = "";
-  noOrigin = null;
-  noMessage.classList.remove("show");
-
+  resetNoButton();
   showScreen(screenQuestion);
 });
 
